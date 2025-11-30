@@ -1,23 +1,20 @@
-
 name: Next.js CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
 
 env:
   ARTIFACT_NAME: nextjs-build.tar.gz
 
-# ==========================================
-# 1️⃣ PREPARE ENVIRONMENT
-# ==========================================
 jobs:
+  # ==========================================
+  # 1️⃣ PREPARAR AMBIENTE
+  # ==========================================
   prepare:
     name: 🧰 Prepare Environment
     runs-on: ubuntu-latest
-    outputs:
-      cache-hit: ${{ steps.cache.outputs.cache-hit }}
 
     steps:
       - name: 🧩 Checkout repository
@@ -29,23 +26,20 @@ jobs:
           node-version: 20
           cache: "npm"
 
+      - name: 📥 Install dependencies
+        run: npm ci
+
       - name: 🗃️ Cache Next.js build
-        id: cache
         uses: actions/cache@v4
         with:
           path: |
             .next/cache
             node_modules
           key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            nextjs-${{ runner.os }}
 
-      - name: 📥 Install dependencies
-        run: npm ci
-
-# ==========================================
-# 2️⃣ BUILD NEXT.JS
-# ==========================================
+  # ==========================================
+  # 2️⃣ BUILD NEXT.JS
+  # ==========================================
   build:
     name: 🏗️ Build Next.js
     runs-on: ubuntu-latest
@@ -71,10 +65,9 @@ jobs:
         run: |
           mkdir deploy
           cp -R .next deploy/
+          cp -R public deploy/
           cp package.json deploy/
           cp package-lock.json deploy/
-          cp -R public deploy/
-          echo "🧹 Instalando dependências de produção..."
           cd deploy
           npm ci --omit=dev
           cd ..
@@ -86,9 +79,9 @@ jobs:
           name: nextjs-build
           path: ${{ env.ARTIFACT_NAME }}
 
-# ==========================================
-# 3️⃣ DEPLOY TO DIGITAL OCEAN
-# ==========================================
+  # ==========================================
+  # 3️⃣ DEPLOY PARA DIGITAL OCEAN
+  # ==========================================
   deploy:
     name: 🚀 Deploy to DigitalOcean
     runs-on: ubuntu-latest
@@ -102,18 +95,7 @@ jobs:
           name: nextjs-build
           path: .
 
-      - name: 🧭 Sync server repo
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.DO_HOST }}
-          username: ${{ secrets.DO_USER }}
-          key: ${{ secrets.DO_SSH_KEY }}
-          port: 22
-          script: |
-            cd /root/openote
-            git fetch origin master
-            git reset --hard origin/master
-
+      # 📦 UPLOAD DO BUILD PARA O SERVIDOR
       - name: 🌍 Upload build to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -124,6 +106,7 @@ jobs:
           source: nextjs-build.tar.gz
           target: /root/openote/
 
+      # 🚀 RODAR DEPLOY VIA SSH
       - name: 🔄 Run remote redeploy
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -134,14 +117,12 @@ jobs:
           timeout: 180s
           script: |
             echo "📦 Extraindo build..."
-            cd /root/openote
-            rm -rf deploy/
-            mkdir deploy
-            tar -xzvf nextjs-build.tar.gz -C deploy/
+            mkdir -p /root/openote/deploy
+            rm -rf /root/openote/deploy/*
+            tar -xzvf /root/openote/nextjs-build.tar.gz -C /root/openote/deploy/
 
-            echo "🔄 Reiniciando serviço...."
+            echo "🔄 Reiniciando serviço..."
             pm2 delete openote || true
-            pm2 start deploy/node_modules/.bin/next --name openote -- start -p 3000
+            pm2 start /root/openote/deploy/node_modules/.bin/next --name openote -- start -p 3000
 
-            echo "🚀 Deploy finalizado!"
-
+            echo "🚀 Deploy finalizado com sucesso!"
