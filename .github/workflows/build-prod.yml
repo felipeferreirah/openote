@@ -123,6 +123,6 @@ jobs:
 
             echo "🔄 Reiniciando serviço..."
             pm2 delete openote || true
-            pm2 start /root/openote/deploy/node_modules/.bin/next --name openote -- start -p 3000
+            pm2 start "npm start -- -p 3001" --name openote
 
             echo "🚀 Deploy finalizado com sucesso!"

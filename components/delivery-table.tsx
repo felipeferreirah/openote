@@ -42,7 +42,7 @@ export default function DeliveryTable({
   const [isDeleting, setIsDeleting] = useState(false)
 
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("pt-BR")
+    return new Date(date).toLocaleDateString("pt-BR", { timeZone: "UTC" })
   }
 
   const formatCurrency = (value: number | undefined) => {
