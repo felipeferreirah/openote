@@ -2,6 +2,14 @@ import { jsPDF } from "jspdf"
 import autoTable from "jspdf-autotable"
 import type { Delivery } from "@/types/delivery"
 
+function formatDate(dateString: string) {
+  const date = new Date(dateString);
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const year = date.getUTCFullYear();
+  return `${day}/${month}/${year}`;
+}
+
 export function generatePDF(deliveries: Delivery[], dateStart?: string, dateEnd?: string) {
   const doc = new jsPDF({
     orientation: "landscape",
@@ -29,7 +37,7 @@ export function generatePDF(deliveries: Delivery[], dateStart?: string, dateEnd?
 
   const tableData = deliveries.map((delivery) => [
     delivery.saida,
-    new Date(delivery.dataContratacao).toLocaleDateString("pt-BR"),
+    formatDate(delivery.dataContratacao),
     delivery.transportador,
     delivery.motorista,
     delivery.placa,
