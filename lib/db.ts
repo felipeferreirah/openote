@@ -11,6 +11,14 @@ const pool = mysql.createPool({
   queueLimit: 0,
 })
 
+console.log("MYSQL CONFIG:", {
+  host: process.env.MYSQL_HOST,
+  port: process.env.MYSQL_PORT,
+  user: process.env.MYSQL_USER,
+  pass: process.env.MYSQL_PASS,
+  db: process.env.MYSQL_DB,
+});
+
 export async function query(sql: string, values?: any[]) {
   const connection = await pool.getConnection()
   try {

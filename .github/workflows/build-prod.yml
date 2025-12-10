@@ -9,9 +9,6 @@ env:
   ARTIFACT_NAME: nextjs-build.tar.gz
 
 jobs:
-  # ==========================================
-  # 1️⃣ PREPARAR AMBIENTE
-  # ==========================================
   prepare:
     name: 🧰 Prepare Environment
     runs-on: ubuntu-latest
@@ -37,9 +34,6 @@ jobs:
             node_modules
           key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
-  # ==========================================
-  # 2️⃣ BUILD NEXT.JS
-  # ==========================================
   build:
     name: 🏗️ Build Next.js
     runs-on: ubuntu-latest
@@ -79,23 +73,17 @@ jobs:
           name: nextjs-build
           path: ${{ env.ARTIFACT_NAME }}
 
-  # ==========================================
-  # 3️⃣ DEPLOY PARA DIGITAL OCEAN
-  # ==========================================
   deploy:
     name: 🚀 Deploy to DigitalOcean
     runs-on: ubuntu-latest
     needs: build
-    environment: production
 
     steps:
       - name: 📥 Download artifact from build
         uses: actions/download-artifact@v4
         with:
           name: nextjs-build
-          path: .
 
-      # 📦 UPLOAD DO BUILD PARA O SERVIDOR
       - name: 🌍 Upload build to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -106,7 +94,6 @@ jobs:
           source: nextjs-build.tar.gz
           target: /root/openote/
 
-      # 🚀 RODAR DEPLOY VIA SSH
       - name: 🔄 Run remote redeploy
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -121,12 +108,20 @@ jobs:
             rm -rf /root/openote/deploy/*
             tar -xzvf /root/openote/nextjs-build.tar.gz -C /root/openote/deploy/
 
-            echo "🛠 Instalando dependências de produção..."
+            echo "🔧 Instalando dependências..."
             cd /root/openote/deploy
             npm ci --omit=dev
 
-            echo "🔄 Reiniciando PM2..."
+            echo "🚀 Reiniciando PM2..."
             pm2 delete openote || true
-            pm2 start npm --name "openote" -- start
 
-            echo "🚀 Deploy finalizado com sucesso!"
+            # Usar ecosystem se existir
+            if [ -f /root/openote/ecosystem.config.js ]; then
+              pm2 start /root/openote/ecosystem.config.js
+            else
+              pm2 start npm --name "openote" -- start --cwd /root/openote/deploy
+            fi
+
+            pm2 save
+
+            echo "🎉 Deploy concluído!"
