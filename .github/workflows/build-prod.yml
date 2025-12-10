@@ -43,12 +43,6 @@ jobs:
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-
       - name: 📥 Install dependencies
         run: npm ci
 
@@ -77,13 +71,16 @@ jobs:
     name: 🚀 Deploy to DigitalOcean
     runs-on: ubuntu-latest
     needs: build
+    environment: production   # ⬅️ ESSENCIAL para acessar os Environment Secrets!
 
     steps:
       - name: 📥 Download artifact from build
         uses: actions/download-artifact@v4
         with:
           name: nextjs-build
+          path: .
 
+      # 🔐 Copiando build para o droplet
       - name: 🌍 Upload build to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -92,8 +89,9 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           port: 22
           source: nextjs-build.tar.gz
-          target: /root/openote/
+          target: /home/openote/
 
+      # 🚀 Rodando deploy via SSH
       - name: 🔄 Run remote redeploy
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -104,24 +102,17 @@ jobs:
           timeout: 180s
           script: |
             echo "📦 Extraindo build..."
-            mkdir -p /root/openote/deploy
-            rm -rf /root/openote/deploy/*
-            tar -xzvf /root/openote/nextjs-build.tar.gz -C /root/openote/deploy/
+            mkdir -p /home/openote/deploy
+            rm -rf /home/openote/deploy/*
+            tar -xzvf /home/openote/nextjs-build.tar.gz -C /home/openote/deploy/
 
             echo "🔧 Instalando dependências..."
-            cd /root/openote/deploy
+            cd /home/openote/deploy
             npm ci --omit=dev
 
-            echo "🚀 Reiniciando PM2..."
+            echo "🔄 Reiniciando PM2..."
             pm2 delete openote || true
-
-            # Usar ecosystem se existir
-            if [ -f /root/openote/ecosystem.config.js ]; then
-              pm2 start /root/openote/ecosystem.config.js
-            else
-              pm2 start npm --name "openote" -- start --cwd /root/openote/deploy
-            fi
-
+            pm2 start npm --name "openote" -- start --cwd /home/openote/deploy
             pm2 save
 
-            echo "🎉 Deploy concluído!"
+            echo "🚀 Deploy finalizado com sucesso!"
