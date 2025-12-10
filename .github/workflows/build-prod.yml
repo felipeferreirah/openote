@@ -115,7 +115,7 @@ jobs:
 
             echo "🔄 Reiniciando PM2..."
             pm2 delete openote || true
-            pm2 start npm --name "openote" --cwd /home/openote/deploy -- start -- -H 0.0.0.0
+            pm2 start "npm start -- -H 0.0.0.0" --name openote --cwd /home/openote/deploy
 
             echo "💾 Salvando PM2..."
             pm2 save
