@@ -106,13 +106,18 @@ jobs:
             rm -rf /home/openote/deploy/*
             tar -xzvf /home/openote/nextjs-build.tar.gz -C /home/openote/deploy/
 
-            echo "🔧 Instalando dependências..."
+            echo "📝 Copiando .env para o deploy..."
+            cp /home/openote/.env /home/openote/deploy/.env
+
+            echo "📦 Instalando dependências de produção..."
             cd /home/openote/deploy
             npm ci --omit=dev
 
             echo "🔄 Reiniciando PM2..."
             pm2 delete openote || true
-            pm2 start npm --name "openote" -- start --cwd /home/openote/deploy
+            pm2 start npm --name "openote" --cwd /home/openote/deploy -- start -- -H 0.0.0.0
+
+            echo "💾 Salvando PM2..."
             pm2 save
 
             echo "🚀 Deploy finalizado com sucesso!"
