@@ -6,3 +6,5 @@ ALTER TABLE deliveries ADD COLUMN saida INT NOT NULL DEFAULT 1 AFTER dataContrat
 
 -- Adicionar índice para melhor performance com agrupamento por saída
 CREATE INDEX idx_user_saida ON deliveries(user_id, saida);
+
+
