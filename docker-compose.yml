@@ -16,36 +16,20 @@ services:
 
     command:
       - --bind-address=0.0.0.0
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-      - --default-authentication-plugin=mysql_native_password
-
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "mysqladmin ping -h localhost -u${MYSQL_USER} -p${MYSQL_PASSWORD}"
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 10
 
 
   app:
     build: .
     container_name: openote_app
     restart: unless-stopped
-
     env_file:
       - .env
 
     depends_on:
-      mysql:
-        condition: service_healthy
+      - mysql
 
     ports:
       - "3000:3000"
-
 
 volumes:
   mysql_openote_data:
