@@ -9,6 +9,7 @@ jobs:
   deploy:
     name: 🚀 Deploy via SSH
     runs-on: ubuntu-latest
+    environment: production   # ⬅️ ESSENCIAL
 
     steps:
       - name: 🔐 SSH and deploy
