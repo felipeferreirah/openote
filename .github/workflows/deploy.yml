@@ -1,8 +1,8 @@
-name: 🚀 Deploy Openote
+name: 🚀 Deploy Openote Release 
 
 on:
   workflow_run:
-    workflows: ["🐳 Build & Push Openote"]
+    workflows: ["Build & Generate Release"]
     types: [completed]
 
 jobs:

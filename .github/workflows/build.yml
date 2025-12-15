@@ -1,4 +1,4 @@
-name: 🐳 Build & Push Openote
+name: Build & Generate Release
 
 on:
   push:
