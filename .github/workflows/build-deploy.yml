@@ -1,0 +1,50 @@
+name: 🐳 Build & 🚀 Deploy Openote
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: 🐳 Build & Push Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔐 Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: 🏗️ Build & Push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USER }}/openote:latest
+            ${{ secrets.DOCKER_USER }}/openote:${{ github.sha }}
+
+  deploy:
+    name: 🚀 Deploy Openote
+    runs-on: ubuntu-latest
+    needs: build              # 🔥 ISSO É O PONTO CHAVE
+    environment: production
+
+    steps:
+      - name: 🔐 SSH Deploy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          script: |
+            cd /home/openote
+            docker compose pull app
+            docker compose up -d app
+            docker image prune -f
+            echo "✅ Deploy finalizado com sucesso!"
