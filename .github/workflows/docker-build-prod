@@ -1,0 +1,34 @@
+name: 🚀 Deploy Openote (Docker)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: 🚀 Deploy via Docker Compose
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔐 SSH and deploy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          port: 22
+          timeout: 300s
+          script: |
+            echo "📥 Atualizando código..."
+            cd /home/openote
+            git pull origin main
+
+            echo "🐳 Buildando e subindo containers..."
+            docker compose down
+            docker compose up -d --build
+
+            echo "🧹 Limpando imagens antigas..."
+            docker image prune -f
+
+            echo "✅ Deploy finalizado com sucesso!"
