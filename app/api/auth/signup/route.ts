@@ -29,6 +29,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email já cadastrado" }, { status: 400 })
     }
     console.error("Erro ao criar usuário:", error)
-    return NextResponse.json({ error: "Erro ao criar usuário" }, { status: 500 })
+    return NextResponse.json({ error: `Erro ao criar usuário: ${error.message}` }, { status: 500 })
   }
 }
