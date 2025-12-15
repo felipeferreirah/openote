@@ -1,0 +1,25 @@
+name: 🚀 Deploy Openote
+
+on:
+  workflow_run:
+    workflows: ["🐳 Build & Push Openote"]
+    types: [completed]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: 🔐 SSH Deploy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          script: |
+            cd /home/openote
+            docker compose pull app
+            docker compose up -d app
+            docker image prune -f
+            echo "✅ Deploy finalizado com sucesso!"
