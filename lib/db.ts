@@ -11,6 +11,9 @@ const pool = mysql.createPool({
   queueLimit: 0,
 })
 
+
+
+
 console.log("MYSQL CONFIG:", {
   host: process.env.MYSQL_HOST,
   port: process.env.MYSQL_PORT,
