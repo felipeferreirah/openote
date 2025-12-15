@@ -7,9 +7,8 @@ on:
 
 jobs:
   deploy:
-    name: 🚀 Deploy via Docker Compose
+    name: 🚀 Deploy via SSH
     runs-on: ubuntu-latest
-    environment: production   # ⬅️ ESSENCIAL
 
     steps:
       - name: 🔐 SSH and deploy
@@ -21,13 +20,17 @@ jobs:
           port: 22
           timeout: 300s
           script: |
+            set -e
+
             echo "📥 Atualizando código..."
             cd /home/openote
             git pull origin main
 
-            echo "🐳 Buildando e subindo containers..."
-            docker compose down
-            docker compose up -d --build
+            echo "🐳 Buildando apenas o APP..."
+            docker compose build app
+
+            echo "🚀 Subindo nova versão do APP..."
+            docker compose up -d app
 
             echo "🧹 Limpando imagens antigas..."
             docker image prune -f
