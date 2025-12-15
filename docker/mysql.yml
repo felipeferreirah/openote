@@ -7,10 +7,10 @@ services:
     restart: unless-stopped
 
     environment:
-      MYSQL_ROOT_PASSWORD: 
-      MYSQL_DATABASE: 
-      MYSQL_USER: 
-      MYSQL_PASSWORD: ""
+      MYSQL_ROOT_PASSWORD: A57c8d84dS-edd9-4076-bc64-ff9914391f32a
+      MYSQL_DATABASE: openote
+      MYSQL_USER: openote
+      MYSQL_PASSWORD: "cA4*3Tp8#Ba1@y"
       TZ: America/Sao_Paulo
 
     ports:
