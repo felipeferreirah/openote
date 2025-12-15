@@ -27,6 +27,7 @@ jobs:
         with:
           context: .
           no-cache: true   # 🔥 ISSO AQUI
+          push: true
           tags: |
                 ghcr.io/felipeferreirah/openote:latest
                 ghcr.io/felipeferreirah/openote:${{ github.sha }}
