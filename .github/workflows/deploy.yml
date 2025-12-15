@@ -1,9 +1,10 @@
-name: 🚀 Deploy Openote Release 
+name: 🚀 Deploy Openote Release
 
 on:
   workflow_run:
     workflows: ["Build & Generate Release"]
-    types: [completed]
+    types:
+      - completed
 
 jobs:
   deploy:
@@ -18,8 +19,20 @@ jobs:
           username: ${{ secrets.DO_USER }}
           key: ${{ secrets.DO_SSH_KEY }}
           script: |
+            set -e
+
             cd /home/openote
+
+            echo "🛑 Parando container app (se existir)"
+            docker compose rm -sf app || true
+
+            echo "⬇️ Pull da imagem mais recente"
             docker compose pull app
-            docker compose up -d app
+
+            echo "🚀 Subindo container com recriação forçada"
+            docker compose up -d --force-recreate app
+
+            echo "🧹 Limpando imagens antigas"
             docker image prune -f
+
             echo "✅ Deploy finalizado com sucesso!"
