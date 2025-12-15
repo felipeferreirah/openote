@@ -1,11 +1,11 @@
 import mysql from "mysql2/promise"
 
 const pool = mysql.createPool({
-  host: process.env.MYSQL_HOST || "138.68.232.90",
-  port: Number.parseInt(process.env.MYSQL_PORT || "3306"),
-  user: process.env.MYSQL_USER || "root",
-  password: process.env.MYSQL_PASS || "135157",
-  database: process.env.MYSQL_DB || "delivery_system",
+  host: process.env.MYSQL_HOST!,
+  port: Number(process.env.MYSQL_PORT || 3306),
+  user: process.env.MYSQL_USER!,
+  password: process.env.MYSQL_PASSWORD!,
+  database: process.env.MYSQL_DATABASE!, // ✅ AQUI
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -15,18 +15,13 @@ console.log("MYSQL CONFIG:", {
   host: process.env.MYSQL_HOST,
   port: process.env.MYSQL_PORT,
   user: process.env.MYSQL_USER,
-  pass: process.env.MYSQL_PASS,
-  db: process.env.MYSQL_DB,
-});
+  db: process.env.MYSQL_DATABASE,
+})
+
 
 export async function query(sql: string, values?: any[]) {
-  const connection = await pool.getConnection()
-  try {
-    const [results] = await connection.execute(sql, values)
-    return results
-  } finally {
-    connection.release()
-  }
+  const [rows] = await pool.execute(sql, values)
+  return rows
 }
 
 export default pool
