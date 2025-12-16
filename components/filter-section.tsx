@@ -53,7 +53,7 @@ export default function FilterSection({ onFilterChange, onExport, totalDeliverie
             />
           </div>
 
-          <div className="flex gap-2 col-span-1 sm:col-span-2 lg:col-span-2 justify-center items-center">
+          <div className="flex gap-2 col-span-1 sm:col-span-2 lg:col-span-2 justify-center items-end ">
             <Button onClick={handleFilterClick} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm">
               Filtrar
             </Button>
