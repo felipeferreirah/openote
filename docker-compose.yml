@@ -1,44 +1,22 @@
-version: "3.9"
+mysql:
+  image: mysql:8.0
+  container_name: mysql_openote
+  restart: unless-stopped
+  env_file:
+    - .env
+  volumes:
+    - mysql_openote_data:/var/lib/mysql
 
-services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql_openote
-    restart: unless-stopped
-    env_file:
-      - .env
+  command:
+    - --bind-address=0.0.0.0
+    - --max-connections=10
+    - --wait-timeout=30
+    - --interactive-timeout=30
+    - --innodb-buffer-pool-size=64M
+    - --innodb-thread-concurrency=1
+    - --innodb-read-io-threads=1
+    - --innodb-write-io-threads=1
+    - --event-scheduler=OFF
 
-    ports:
-      - "3306:3306"
-
-    volumes:
-      - mysql_openote_data:/var/lib/mysql
-
-    # 🔥 LIMITES CRÍTICOS PARA VPS PEQUENA
-    command:
-      - --bind-address=0.0.0.0
-      - --max-connections=20
-      - --wait-timeout=60
-      - --interactive-timeout=60
-      - --innodb-buffer-pool-size=128M
-
-    # 🔒 LIMITES DE RECURSO (EVITA 99% CPU)
-    mem_limit: 512m
-    cpus: 0.5
-
-
-  app:
-    build: .
-    container_name: openote_app
-    restart: unless-stopped
-    env_file:
-      - .env
-
-    depends_on:
-      - mysql
-
-    ports:
-      - "3000:3000"
-
-volumes:
-  mysql_openote_data:
+  mem_limit: 384m
+  cpus: 0.25
