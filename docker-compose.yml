@@ -1,75 +1,35 @@
-version: "3.8"
+version: "3.9"
 
 services:
   mysql:
     image: mysql:8.0
     container_name: mysql_openote
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env
+
     ports:
       - "3306:3306"
+
     volumes:
       - mysql_openote_data:/var/lib/mysql
-    
-    # Limites de recursos para MySQL (otimizado para 1GB RAM)
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 400M
-        reservations:
-          memory: 200M
-    
-    # Configurações MySQL para baixo uso de memória
-    command: [
-      '--max_connections=50',
-      '--innodb_buffer_pool_size=128M',
-      '--innodb_log_file_size=32M',
-      '--query_cache_size=0',
-      '--query_cache_type=0',
-      '--performance_schema=OFF',
-      '--default-authentication-plugin=mysql_native_password'
-    ]
-    
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+
+    command:
+      - --bind-address=0.0.0.0
+
 
   app:
-    image: ghcr.io/felipeferreirah/openote:latest
+    build: .
     container_name: openote_app
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env
+
     depends_on:
-      mysql:
-        condition: service_healthy
+      - mysql
+
     ports:
       - "3000:3000"
-    
-    # Limites de recursos para App (otimizado para 1GB RAM)
-    deploy:
-      resources:
-        limits:
-          cpus: '0.7'
-          memory: 450M
-        reservations:
-          memory: 200M
-    
-    # Variáveis de ambiente para otimizar Node.js
-    environment:
-      - NODE_ENV=production
-      - NODE_OPTIONS=--max-old-space-size=384 --max-http-header-size=16384
-    
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
 volumes:
   mysql_openote_data:
-    driver: local
