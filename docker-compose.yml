@@ -1,11 +1,19 @@
-mysql:
-  image: mysql:8.0
-  container_name: mysql_openote
-  restart: unless-stopped
-  env_file:
-    - .env
-  volumes:
-    - mysql_openote_data:/var/lib/mysql
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_openote
+    restart: unless-stopped
+    env_file:
+      - .env
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql_openote_data:/var/lib/mysql
+
 
   command:
     - --bind-address=0.0.0.0
@@ -18,5 +26,20 @@ mysql:
     - --innodb-write-io-threads=1
     - --event-scheduler=OFF
 
-  mem_limit: 384m
-  cpus: 0.25
+
+
+  app:
+    build: .
+    container_name: openote_app
+    restart: unless-stopped
+    env_file:
+      - .env
+
+    depends_on:
+      - mysql
+
+    ports:
+      - "3000:3000"
+
+volumes:
+  mysql_openote_data:
