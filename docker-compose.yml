@@ -14,8 +14,17 @@ services:
     volumes:
       - mysql_openote_data:/var/lib/mysql
 
+    # 🔥 LIMITES CRÍTICOS PARA VPS PEQUENA
     command:
       - --bind-address=0.0.0.0
+      - --max-connections=20
+      - --wait-timeout=60
+      - --interactive-timeout=60
+      - --innodb-buffer-pool-size=128M
+
+    # 🔒 LIMITES DE RECURSO (EVITA 99% CPU)
+    mem_limit: 512m
+    cpus: 0.5
 
 
   app:

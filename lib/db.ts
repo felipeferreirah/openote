@@ -5,11 +5,12 @@ const pool = mysql.createPool({
   port: Number(process.env.MYSQL_PORT || 3306),
   user: process.env.MYSQL_USER!,
   password: process.env.MYSQL_PASSWORD!,
-  database: process.env.MYSQL_DATABASE!, // ✅ AQUI
+  database: process.env.MYSQL_DATABASE!, 
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: 3,
   queueLimit: 0,
 })
+
 
 
 
