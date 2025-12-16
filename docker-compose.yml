@@ -14,12 +14,7 @@ services:
       - --max-connections=5
       - --wait-timeout=30
       - --interactive-timeout=30
-      - --innodb-buffer-pool-size=64M
-      - --innodb-thread-concurrency=1
-      - --innodb-read-io-threads=1
-      - --innodb-write-io-threads=1
-      - --event-scheduler=OFF
-    cpus: 0.50
+    cpus: 0.80
 
   app:
     build: .
