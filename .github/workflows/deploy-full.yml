@@ -27,16 +27,17 @@ jobs:
             echo "⬇️ Atualizando código"
             git pull origin main
 
-            echo "🛑 Parando containers"
-            docker compose down
+            echo "🛑 Parando SOMENTE o app"
+            docker compose stop app
+            docker compose rm -f app
 
-            echo "🏗️ Buildando containers"
-            docker compose build --no-cache
+            echo "🏗️ Buildando SOMENTE o app (sem cache)"
+            docker compose build --no-cache app
 
-            echo "🚀 Subindo containers"
-            docker compose up -d
+            echo "🚀 Subindo SOMENTE o app"
+            docker compose up -d app
 
             echo "🧹 Limpando imagens antigas"
             docker image prune -f
 
-            echo "✅ Deploy finalizado com sucesso!"
+            echo "✅ Deploy do app finalizado com sucesso!"

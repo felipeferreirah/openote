@@ -32,7 +32,7 @@ export default function FilterSection({ onFilterChange, onExport, totalDeliverie
           <h3 className="text-lg sm:text-xl font-semibold text-slate-900">Filtrar por Data</h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 justify-center items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 justify-center items-end">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">Data Início</label>
             <input
