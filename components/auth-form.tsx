@@ -59,7 +59,7 @@ export default function AuthForm({ onSuccess }: AuthFormProps) {
             {isLogin ? "Acesso" : "Criar Conta"}
           </h2>
           <p className="text-sm text-slate-500 text-center mb-6">
-            {isLogin ? "Gerencie suas entregas" : "Comece a gerenciar suas entregas"}
+            {isLogin ? "Gerencie suas entregas" : "Comece a gerenciar suas entregas agora"}
           </p>
 
           {error && (
