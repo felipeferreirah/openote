@@ -11,7 +11,7 @@ services:
       - mysql_openote_data:/var/lib/mysql
     command:
       - --bind-address=0.0.0.0
-      - --max-connections=10
+      - --max-connections=5
       - --wait-timeout=30
       - --interactive-timeout=30
       - --innodb-buffer-pool-size=64M
@@ -19,8 +19,7 @@ services:
       - --innodb-read-io-threads=1
       - --innodb-write-io-threads=1
       - --event-scheduler=OFF
-    mem_limit: 384m
-    cpus: 0.25
+    cpus: 0.50
 
   app:
     build: .
