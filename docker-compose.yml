@@ -52,7 +52,8 @@ services:
 
     # 🌐 rede interna apenas
     networks:
-      - internal_net
+      - internal_net 
+      
 
     # ⚠️ SOMENTE se for expor
     ports:
