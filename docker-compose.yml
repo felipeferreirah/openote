@@ -7,24 +7,19 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-
-    command:
-      - --bind-address=127.0.0.1
-      - --max-connections=20
-      - --wait-timeout=30
-      - --interactive-timeout=30
-
     volumes:
       - mysql_openote_data:/var/lib/mysql
-
-    deploy:
-      resources:
-        limits:
-          cpus: "0.50"
-          memory: 768M
-
-    networks:
-      - internal_net
+    command:
+      - --bind-address=0.0.0.0
+      - --max-connections=5
+      - --wait-timeout=30
+      - --interactive-timeout=30
+      - --innodb-buffer-pool-size=64M
+      - --innodb-thread-concurrency=1
+      - --innodb-read-io-threads=1
+      - --innodb-write-io-threads=1
+      - --event-scheduler=OFF
+    cpus: 0.50
 
   app:
     build: .
@@ -34,34 +29,8 @@ services:
       - .env
     depends_on:
       - mysql
-
-    # 🔒 SEGURANÇA CRÍTICA
-    user: "1000:1000"
-    read_only: true
-    cap_drop:
-      - ALL
-    security_opt:
-      - no-new-privileges:true
-
-    # 🔥 LIMITES ANTI-MINER
-    deploy:
-      resources:
-        limits:
-          cpus: "0.50"
-          memory: 512M
-
-    # 🌐 rede interna apenas
-    networks:
-      - internal_net 
-      
-
-    # ⚠️ SOMENTE se for expor
     ports:
-      - "127.0.0.1:3000:3000"
+      - "3000:3000"
 
 volumes:
   mysql_openote_data:
-
-networks:
-  internal_net:
-    internal: true
