@@ -12,10 +12,6 @@ services:
       mysqld
       --bind-address=0.0.0.0
       --max-connections=5
-      --wait-timeout=30
-      --interactive-timeout=30
-      --innodb-buffer-pool-size=64M
-      --event-scheduler=OFF
 
     ports:
       - "3306:3306"
