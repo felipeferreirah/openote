@@ -20,6 +20,8 @@ services:
       - --innodb-write-io-threads=1
       - --event-scheduler=OFF
     cpus: 0.50
+    ports:
+      - "3306:3306"
 
   app:
     build: .
